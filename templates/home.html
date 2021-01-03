@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Ledis</title>
+  </head>
+  <body>
+
+    <div id="form">
+      <h2 style="text-align: center;">Command Line Interface</h2>
+     <div style="background-color: black;">            <!-- Divider   -->
+       {% for i in commands: %}      <!--  this allows for display of everything inputted template by JINJA -->
+        <p style="color: white;"> {{i}} </p>
+      {% endfor %}
+      <form id="commands" method="post">    <!-- form to take in inputs -->
+        <input type="text" name="command" style="color: white; background-color: black; border-width: 0;"> &emsp; &emsp; <input type="submit" style="visibility: hidden;">
+      </form>
+    </div>
+    </div>
+  </body>
+</html>
