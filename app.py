@@ -38,17 +38,13 @@ def parse_command(command):
         result = ledis.SAVE()
     elif cmd == "RESTORE":
         result = ledis.RESTORE()
-    elif cmd == "CLEAR":
-        commands.clear()
-        return
     else:
         result = "INVALID INPUT"
 
     while len(commands) > 12:
         commands.pop(0)
 
-    commands.append(result)
-    return
+    return result
 
 
 
@@ -59,7 +55,8 @@ def home():
         command = request.form.get('command')  # getting commands
         commands.append(command)
 
-        parse_command(command)  # calling parse_command to execute commands
+        response = parse_command(command)  # calling parse_command to execute commands
+        commands.append(response)
 
     return render_template("home.html", commands=commands)  # show the user the page with updated commands/response
 
