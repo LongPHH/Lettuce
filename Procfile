@@ -1,1 +1,2 @@
-worker: python web-CLI.py
+web: gunicorn wsgi:web-CLI
+
