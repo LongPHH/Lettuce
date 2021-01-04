@@ -7,7 +7,7 @@ def remove_duplicates(lst):
         temp[i] = 0
     return list(temp.keys())
 
-print("heee")
+
 global keyErrorMessage
 keyErrorMessage = "ERROR: Key not found"  # JIC we want to update for some weird reason
 
