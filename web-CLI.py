@@ -17,7 +17,7 @@ def parse_command(command):
     if cmd == "SET":
         result = ledis.SET(command_lst[1], command_lst[2:])
     elif cmd == "GET":
-        result = ledis.GET(command_lst[1])[0]
+        result = ledis.GET(command_lst[1])
     elif cmd == "SADD":
         result = ledis.SADD(command_lst[1], command_lst[2:])
     elif cmd == "SREM":

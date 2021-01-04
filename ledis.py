@@ -5,7 +5,7 @@ def remove_duplicates(lst):
     temp = {}
     for i in lst:
         temp[i] = 0
-    return temp.keys()
+    return list(temp.keys())
 
 
 global keyErrorMessage
@@ -33,25 +33,49 @@ class Ledis:
         except:
             pass
 
+
+    def check_string(self,key):
+        if type(self.dic[key]) == str:
+            return True
+        return False
+
+
     def SET(self, key, val):  # val is a list but we only care if this list have one element
         if len(val) > 1:
             return "ERROR: Too Many Values Entered"
-        self.dic[key] = val  # add key,val pair into dictionary
-        self.expire[key] = [0, None]  # set a current time and an expire date as None initially
-        return "OK"
+        if key not in self.dic.keys():
+            self.dic[key] = val[0]  # add key,val pair into dictionary
+            print(val, val[0])
+            self.expire[key] = [0, None]  # set a current time and an expire date as None initially
+            return "OK"
+        else:
+            if self.check_string(key):  # check if passed in a set key
+                self.dic[key] = val[0]  # add key,val pair into dictionary
+                print(val, val[0])
+                self.expire[key] = [0, None]  # set a current time and an expire date as None initially
+                return "OK"
+            else:
+                return "ERROR: Set Key Passed"
+
+
 
     def GET(self, key):
         self.clean_dict()  # clean dict before getting elements
         try:
+            if self.check_string(key) == False:
+                return "ERROR: Set Key Passed"
             return self.dic[key]
         except:
             return keyErrorMessage
+
 
     def SADD(self, key, values):  # value will be a list of element handled in flask
         self.clean_dict()  # clean dict before getting elements
 
         # store set as a value in the dic
         try:
+            if self.check_string(key):
+                return "ERROR: String Key Passed"
             count = len(self.dic[key])  # initial count
             self.dic[key] += values  # adding all values
             self.dic[key] = remove_duplicates(self.dic[key])  # removing duplicates
@@ -68,6 +92,8 @@ class Ledis:
     def SREM(self, key, values):
         self.clean_dict()  # clean dict before getting elements
         try:
+            if self.check_string(key):
+                return "ERROR: String Key Passed"
             count = 0  # how many are being removed
             for val in values:
                 if val in self.dic[key]:
@@ -79,9 +105,9 @@ class Ledis:
 
     def SMEMBERS(self, key):
         self.clean_dict()  # clean dict before getting elements
-        if len(self.dic[key]) == 1:
-            return "ERROR: String Key Passed"
         try:
+            if self.check_string(key):
+                return "ERROR: String Key Passed"
             return list(self.dic[key])
         except:
             return keyErrorMessage
@@ -89,15 +115,15 @@ class Ledis:
     def SINTER(self, keys):  # keys is a list of key strings
         self.clean_dict()  # clean dict before getting elements
         try:
-        # set last set in dict = interesction set
-            lst = list(self.dic[keys[-1]])[::]
-            keys.pop()  # no need to check the last key-set again
-
-            if len(lst) == 1:
+            last_key = keys[-1]
+            if self.check_string(last_key):   # check the last key-set first
                 return "ERROR: String Key Passed"
 
+        # set last set in dict = interesction set
+            lst = list(self.dic[last_key])[::]    # isolate the last key-set for comparison later
+            keys.pop()  # no need to check the last key-set again
             for key in keys:
-                if len(self.dic[key]) == 1:  # check if key is a key string
+                if self.check_string(key):
                     return "ERROR: String Key Passed"
                 i = 0
                 while i < len(lst):
@@ -161,3 +187,5 @@ class Ledis:
             self.expire[key] = list(self.snapshot[key])[::]
 
         return "OK"
+
+
