@@ -1,2 +1,2 @@
-web: gunicorn app:web-CLI
+web: gunicorn app:app
 
