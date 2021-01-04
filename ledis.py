@@ -163,6 +163,7 @@ class Ledis:
                 # returning expiration time set minus the difference of current time and time when key was created
                 # essentially expiration time minus how much time has passed since creation
                 return self.expire[key][1] - (time.time() - self.expire[key][0])
+            return "Expiration not set"
         except:
             return keyErrorMessage
 
