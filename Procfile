@@ -1,2 +1,2 @@
-web: gunicorn wsgi:web-CLI
+web: gunicorn app:web-CLI
 
