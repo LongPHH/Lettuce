@@ -13,7 +13,7 @@ ledis = Ledis()
 def parse_command(command):
     command_lst = command.strip().split(' ')  # removing white space with strip()
     cmd = command_lst[0]
-    #print(cmd)
+
     if cmd == "SET":
         result = ledis.SET(command_lst[1], command_lst[2:])
     elif cmd == "GET":
@@ -38,22 +38,29 @@ def parse_command(command):
         result = ledis.SAVE()
     elif cmd == "RESTORE":
         result = ledis.RESTORE()
+    elif cmd == "CLEAR":
+        commands.clear()
+        return
     else:
         result = "INVALID INPUT"
 
     while len(commands) > 12:
         commands.pop(0)
 
-    return result
+    commands.append(result)
+    return
+
 
 
 @app.route("/", methods=['post', 'get'])  # access website when go to /
+
 def home():
     if request.method == 'POST':
         command = request.form.get('command')  # getting commands
         commands.append(command)
-        response = parse_command(command)  # calling parse_command to execute commands
-        commands.append(response)
+
+        parse_command(command)  # calling parse_command to execute commands
+
     return render_template("home.html", commands=commands)  # show the user the page with updated commands/response
 
 
