@@ -50,7 +50,7 @@ def parse_command(command):
 @app.route("/", methods=['post', 'get'])  # access website when go to /
 def home():
     if request.method == 'POST':
-        command = request.form.get('command')
+        command = request.form.get('command')  # getting commands
         commands.append(command)
         response = parse_command(command)  # calling parse_command to execute commands
         commands.append(response)
