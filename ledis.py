@@ -34,7 +34,7 @@ class Ledis:
             pass
 
 
-    def check_string(self,key):
+    def check_string(self,key):  # helper method to check if a value is a string or not.
         if type(self.dic[key]) == str:
             return True
         return False
@@ -49,7 +49,7 @@ class Ledis:
             self.expire[key] = [0, None]  # set a current time and an expire date as None initially
             return "OK"
         else:
-            if self.check_string(key):  # check if passed in a set key
+            if self.check_string(key):  # check if passed in a string key
                 self.dic[key] = val[0]  # add key,val pair into dictionary
                 print(val, val[0])
                 self.expire[key] = [0, None]  # set a current time and an expire date as None initially
@@ -60,7 +60,7 @@ class Ledis:
 
 
     def GET(self, key):
-        self.clean_dict()  # clean dict before getting elements
+        self.clean_dict()     # clean dict before getting elements
         try:
             if self.check_string(key) == False:
                 return "ERROR: Set Key Passed"
@@ -167,6 +167,7 @@ class Ledis:
             return keyErrorMessage
 
     def SAVE(self):
+        self.clean_dict()
         self.snapshot = {}  # making sure its empty in case a snapshot has already been taken once
         self.snapExpire = {}
 
@@ -178,6 +179,7 @@ class Ledis:
         return "OK"
 
     def RESTORE(self):
+        self.clean_dict()
         self.dic = {}
         self.expire = {}
 
